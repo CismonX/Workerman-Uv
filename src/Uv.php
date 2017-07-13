@@ -68,7 +68,6 @@ class Uv implements EventInterface {
                 }, $this, __CLASS__));
                 $this->_eventTimer[self::$_timerId] = $event;
                 return self::$_timerId++;
-                break;
             default:
                 break;
         }
@@ -80,8 +79,9 @@ class Uv implements EventInterface {
             case self::EV_READ:
             case self::EV_WRITE:
                 $fd_key = intval($fd);
-                if (isset($this->_allEvents[$fd_key])) {
-                    if (3 == count($this->_allEvents[$fd_key])) {
+                if (isset($this->_allEvents[$fd_key][$flag])) {
+                    unset($this->_allEvents[$fd_key][$flag]);
+                    if (isset($this->_allEvents[$fd_key][self::EV_RW - $flag])) {
                         $func = $this->_allEvents[$fd_key][self::EV_RW - $flag];
                         //Call uv_poll_start() with the remaining flag instead of call uv_poll_stop().
                         uv_poll_start($this->_allEvents[$fd_key][0], self::EV_RW - $flag,
@@ -89,10 +89,8 @@ class Uv implements EventInterface {
                                 $func($conn);
                             }
                         );
-                    } elseif (isset($this->_allEvents[$fd_key][$flag])) {
+                    } else
                         uv_poll_stop($this->_allEvents[$fd_key][0]);
-                        unset($this->_allEvents[$fd_key][$flag]);
-                    }
                 }
                 break;
             case self::EV_SIGNAL:
