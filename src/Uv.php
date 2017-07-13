@@ -8,6 +8,7 @@ use Workerman\Worker;
 
 class Uv implements EventInterface {
 
+    protected $_loop;
     protected $_allEvents = [];
     protected $_eventSignal = [];
     protected $_eventTimer = [];
@@ -15,14 +16,18 @@ class Uv implements EventInterface {
 
     const EV_RW = 3;
 
+    public function __construct() {
+        $this->_loop = uv_default_loop();
+    }
+
     public function add($fd, $flag, $func, $args = []) {
         switch ($flag) {
             case self::EV_READ:
             case self::EV_WRITE:
                 $fd_key = intval($fd);
                 //uv_poll_init() can only be called once for a same file descriptor.
-                if (isset($this->_allEvents[$fd_key]))
-                    $this->_allEvents[$fd_key][0] = uv_poll_init(null, $fd);
+                if (!isset($this->_allEvents[$fd_key]))
+                    $this->_allEvents[$fd_key][0] = uv_poll_init($this->_loop, $fd);
                 $event = $this->_allEvents[$fd_key][0];
                 $this->_allEvents[$fd_key][$flag] = $func;
                 if (isset($this->_allEvents[$fd_key][self::EV_RW - $flag]))
