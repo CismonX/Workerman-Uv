@@ -12,7 +12,7 @@
 
 1. 使用包管理器安装libuv和libuv-devel（可能需要手动添加源）。
 
-2. 使用pecl安装php-uv（也可以从pecl官网或GitHub仓库）。
+2. 使用pecl安装php-uv（也可以从pecl官网或GitHub仓库下载源码后手动编译）。
 
 3. 将src目录下的Uv.php复制到Workerman\Events下。
 

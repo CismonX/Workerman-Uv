@@ -27,7 +27,7 @@ class Uv implements EventInterface {
                 $this->_allEvents[$fd_key][$flag] = $func;
                 if (isset($this->_allEvents[$fd_key][self::EV_RW - $flag]))
                     $flag = self::EV_RW;
-                //Call uv_poll_start with both existing flags.
+                //Call uv_poll_start() with both existing flags.
                 uv_poll_start($event, $flag, function ($poll, $stat, $ev, $conn) use ($func) {
                     $func($conn);
                 });
@@ -78,7 +78,7 @@ class Uv implements EventInterface {
                 if (isset($this->_allEvents[$fd_key])) {
                     if (3 == count($this->_allEvents[$fd_key])) {
                         $func = $this->_allEvents[$fd_key][self::EV_RW - $flag];
-                        //Call uv_poll_start with the remaining flag instead of call uv_poll_stop.
+                        //Call uv_poll_start() with the remaining flag instead of call uv_poll_stop().
                         uv_poll_start($this->_allEvents[$fd_key][0], self::EV_RW - $flag,
                             function ($poll, $stat, $ev, $conn) use ($func) {
                                 $func($conn);
