@@ -1,6 +1,7 @@
 {
   "name" : "cismonx/workerman-uv",
   "description" : "Libuv event loop for Workerman.",
+  "license" : "MIT",
   "type" : "library",
   "require" : {
     "workerman/workerman": "^3.4",
