@@ -14,7 +14,11 @@
 
 2. 使用pecl安装php-uv（也可以从pecl官网或GitHub仓库下载源码后手动编译）。
 
-3. 将src目录下的Uv.php复制到Workerman\Events下。
+3. 使用composer加载`Workerman\\Events\\Uv`。
+
+```bash
+composer require cismonx/workerman-uv
+```
 
 4. 在项目中使用Workerman\Events\Uv提供的event-loop。如下：
 

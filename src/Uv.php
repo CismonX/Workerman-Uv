@@ -8,19 +8,52 @@ use Workerman\Worker;
 
 class Uv implements EventInterface {
 
+    /**
+     * Libuv event loop.
+     * @var resource
+     */
     protected $_loop;
+
+    /**
+     * Read & write events.
+     * @var array
+     */
     protected $_allEvents = [];
+
+    /**
+     * Signals.
+     * @var array
+     */
     protected $_eventSignal = [];
+
+    /**
+     * Timers.
+     * @var array
+     */
     protected $_eventTimer = [];
+
+    /**
+     * Timer id counter.
+     * @var int
+     */
     protected static $_timerId = 1;
 
+    /**
+     * Identifies a socket with both read and write events registered.
+     */
     const EV_RW = 3;
 
+    /**
+     * Constructor.
+     */
     public function __construct() {
         $this->_loop = uv_default_loop();
     }
 
-    public function add($fd, $flag, $func, $args = []) {
+    /**
+     * {@inheritdoc}
+     */
+    public function add($fd, $flag, $func, $args = null) {
         switch ($flag) {
             case self::EV_READ:
             case self::EV_WRITE:
@@ -74,6 +107,9 @@ class Uv implements EventInterface {
         return false;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function del($fd, $flag) {
         switch ($flag) {
             case self::EV_READ:
@@ -110,18 +146,31 @@ class Uv implements EventInterface {
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function loop() {
         uv_run();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function clearAllTimer() {
         foreach ($this->_eventTimer as $event)
             uv_timer_stop($event);
         $this->_eventTimer = [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function destroy() {
         foreach ($this->_eventSignal as $event)
             uv_signal_stop($event);
+    }
+
+    public function getTimerCount() {
+        return count($this->_eventTimer);
     }
 }

@@ -1,0 +1,14 @@
+{
+  "name" : "cismonx/workerman-uv",
+  "description" : "Libuv event loop for Workerman.",
+  "type" : "library",
+  "require" : {
+    "workerman/workerman": "^3.4",
+    "ext-uv": "*"
+  },
+  "autoload" : {
+    "psr-4" : {
+      "Workerman\\Events\\" : "src/"
+    }
+  }
+}
